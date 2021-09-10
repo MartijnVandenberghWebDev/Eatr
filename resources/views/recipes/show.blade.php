@@ -1,10 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-@if ($recipes->count())
-<div class="d-flex flex-column">
-@foreach ($recipes as $recipe)
-<a class="btn w-100 bg-light p-2 mb-2" href="{{route("recipes.show", ["recipe" => $recipe])}}">
+@if ($recipe)
 <div>
     <div class="title">
         <h3>{{ $recipe->title }}</h3>
@@ -14,16 +11,24 @@
             <span class="badge badge-pill badge-primary">{{ $category->category }}</span>
         @endforeach
     </div>
+    <div class="tags">
+        @foreach ($recipe->ingredient as $ingredient)
+            <span class="badge badge-pill badge-light">{{ $ingredient->name }}</span>
+        @endforeach
+    </div>
     <div class="body">
         <p>{{$recipe->description}}</p>
     </div>
+    <div class="steps">
+        <ol>
+        @foreach(explode("°",$recipe->steps) as $row)
+            <li>{{ $row }}</li>
+        @endforeach
+        </ol>
+    </div>
 </div>
-</a>
-@endforeach
-</div>
-{{ $recipes->links() }}
 @else
-<span>No recipes yet!</span>
+<span>Oops, something went wrong.</span>
 @endif
 
 @endsection

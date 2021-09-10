@@ -22,6 +22,8 @@ Auth::routes();
 
 Route::get('/', [RecipeController::class, 'index'])->name('recipes');
 
+Route::get('/recipes/show/{recipe}', [RecipeController::class, 'show'])->name('recipes.show');
+
 Route::get('/recipes/create', [RecipeController::class, 'addRecipe'])->name("recipes.store");
 Route::post('/recipes/create', [RecipeController::class, 'store']);
 

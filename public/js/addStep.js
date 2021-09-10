@@ -3,26 +3,26 @@ stepBtn.addEventListener("click", addStep);
 
 const categoryArray = document.createElement("input");
 categoryArray.name = "categoryArray";
-// categoryArray.setAttribute("hidden", true);
+categoryArray.setAttribute("hidden", true);
 categoryArray.setAttribute("readonly", true);
 document.querySelector(".arraysForForm").appendChild(categoryArray);
 
 const categories = document.querySelectorAll("#category");
 categories.forEach(category => {
     category.addEventListener("click", () => {
-        categoryArray.value += `/${category.value}`;
+        categoryArray.value += `°${category.value}`;
     })
 });
 
 const ingredientArray = document.createElement("input");
 ingredientArray.name = "ingredientArray";
-// ingredientArray.setAttribute("hidden", true);
+ingredientArray.setAttribute("hidden", true);
 ingredientArray.setAttribute("readonly", true);
 document.querySelector(".arraysForForm").appendChild(ingredientArray);
 
 const stepArray = document.createElement("input");
 stepArray.name = "stepArray";
-// stepArray.setAttribute("hidden", true);
+stepArray.setAttribute("hidden", true);
 stepArray.setAttribute("readonly", true);
 document.querySelector(".arraysForForm").appendChild(stepArray);
 
@@ -35,7 +35,10 @@ function addStep() {
         const inputField = document.createElement("input");
         inputField.name = "steps";
         inputField.value = stepText.value;
-        stepArray.value += `/${stepText.value}`;
+        if(stepArray.value !== "") {
+            stepArray.value += `°`;
+        }
+        stepArray.value += `${stepText.value}`;
         inputField.setAttribute("readonly", true);
         inputField.classList.add("form-control");
         
@@ -55,7 +58,7 @@ ingredients.forEach(ingredient => {
         console.log(e.target.querySelector("input"));
         e.target.querySelector("input").setAttribute("checked", true);
         console.log(this.querySelector(":first-child").value);
-        ingredientArray.value += `/${this.querySelector(":first-child").value}`;
+        ingredientArray.value += `°${this.querySelector(":first-child").value}`;
         this.classList.add("disabled");
     })
 });

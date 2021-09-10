@@ -28,9 +28,9 @@ class RecipeController extends Controller
         $this->validate($request, [
             "title" => "required|max:50",
             "description" => "required",
-            // "categoryArray" => "required",
-            // "ingredientArray" => "required",
-            // "stepArray" => "required",
+            "categoryArray" => "required",
+            "ingredientArray" => "required",
+            "stepArray" => "required",
         ]);
 
         $recipe = auth()->user()->recipes()->create([
@@ -40,14 +40,14 @@ class RecipeController extends Controller
             "user_id" => auth()->user()->id
         ]);
 
-        $ingredients = explode("/", $request["ingredientArray"]);
+        $ingredients = explode("°", $request["ingredientArray"]);
         foreach ($ingredients as $ingredient) {
             $recipe->ingredient()->attach([
                 "ingredient_id" => (int) $ingredient,
             ]);
         }
 
-        $categories = explode('/', $request["categoryArray"]);
+        $categories = explode('°', $request["categoryArray"]);
         foreach ($categories as $category) {
             // dd("done");
             $recipe->category()->attach([
@@ -56,5 +56,9 @@ class RecipeController extends Controller
         }
 
         return redirect()->route("recipes");
+    }
+
+    public function show(Recipe $recipe) {
+        return view("recipes.show", ["recipe" => $recipe]);
     }
 }
