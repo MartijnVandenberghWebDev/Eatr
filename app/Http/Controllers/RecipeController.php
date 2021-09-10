@@ -10,42 +10,48 @@ use Illuminate\Http\Request;
 
 class RecipeController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         $recipes = Recipe::with("category", "ingredient")->orderBy("created_at", "DESC")->paginate(10);
         return view("recipes.index", ["recipes" => $recipes]);
     }
 
-    public function addRecipe() {
+    public function addRecipe()
+    {
         $categories = Category::get();
         $ingredients = Ingredient::with("ingredientCategory")->orderBy("name")->get()->groupBy("ingredient_category_id");
         return view("recipes.create", ["categories" => $categories, "ingredients" => $ingredients]);
     }
 
-    public function store(Request $request) {
-        dd($request);
+    public function store(Request $request)
+    {
         $this->validate($request, [
-            "name" => "required|max:50",
+            "title" => "required|max:50",
             "description" => "required",
-            "category" => "required",
-            "ingredient" => "required",
-            "steps" => "required",
+            // "categoryArray" => "required",
+            // "ingredientArray" => "required",
+            // "stepArray" => "required",
         ]);
 
-        $recipe = Recipe::create([
-            "name" => $request["name"],
+        $recipe = auth()->user()->recipes()->create([
+            "title" => $request["title"],
             "description" => $request["description"],
-            "steps" => $request["steps"],
+            "steps" => $request["stepArray"],
+            "user_id" => auth()->user()->id
         ]);
 
-        foreach($request["category"] as $category) {
-            $recipe->category()->create([
-                "category_id" => $category->id,
+        $ingredients = explode("/", $request["ingredientArray"]);
+        foreach ($ingredients as $ingredient) {
+            $recipe->ingredient()->attach([
+                "ingredient_id" => (int) $ingredient,
             ]);
         }
 
-        foreach($request["ingredient"] as $ingredient) {
-            $recipe->ingredient()->create([
-                "ingredient_id" => $ingredient->id,
+        $categories = explode('/', $request["categoryArray"]);
+        foreach ($categories as $category) {
+            // dd("done");
+            $recipe->category()->attach([
+                "category_id" => (int) $category,
             ]);
         }
 
